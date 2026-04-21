@@ -1,5 +1,7 @@
 -- Создание таблиц
 
+--create database "ProjectCRM"
+
 CREATE TABLE "ClientType" (
     "Id" SERIAL PRIMARY KEY,
     "Name" VARCHAR(255) NOT NULL
@@ -511,7 +513,7 @@ FROM "Users" u
 JOIN "UserRoles" ur ON u."RoleId" = ur."Id"
 left JOIN "Deals" d ON u."Id" = d."UserId" AND d."Status" IN (3, 4, 5)
 left JOIN "Interactions" i ON u."Id" = i."UserId"
-WHERE u."IsBlocked" = FALSE
+WHERE u."IsBlocked" = false and u."RoleId" in (4,6)
 GROUP BY u."Id", u."LastName", u."FirstName", u."Email", ur."Name"
 ORDER BY u."Id";
 
@@ -534,7 +536,18 @@ LEFT JOIN "Payments" p on c."Id" = p."ClientId"
 GROUP BY c."Id", c."LastName", c."FirstName", c."MiddleName", ct."Name", comp."Name"
 ORDER BY c."Id";
 
+-- Роль 1: Администратор (полный доступ)
+CREATE ROLE crm_admin WITH LOGIN PASSWORD 'Admin123!@#';
+GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO crm_admin;
+GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public TO crm_admin;
+GRANT ALL PRIVILEGES ON ALL FUNCTIONS IN SCHEMA public TO crm_admin;
+GRANT CREATE ON SCHEMA public TO crm_admin;
+GRANT crm_admin TO current_user WITH ADMIN OPTION;
+GRANT ALL PRIVILEGES ON SCHEMA public TO crm_admin;
 
+-- Роль 2: Аналитик (только чтение отчетов и представлений)
+CREATE ROLE crm_analyst WITH LOGIN PASSWORD 'Analyst789&*(';
+ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT SELECT ON TABLES TO crm_analyst;
 
 
 
