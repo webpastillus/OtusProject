@@ -173,14 +173,12 @@ CREATE TABLE "Payments" (
     "Id" SERIAL PRIMARY KEY,
     "DealId" INT NOT NULL REFERENCES "Deals"("Id"),
     "CreatedDate" TIMESTAMP DEFAULT (CURRENT_TIMESTAMP AT TIME ZONE 'UTC'),
-    "ClientId" INT NOT NULL REFERENCES "Clients" ("Id"),
     "PaymentSum" NUMERIC(10,2) NOT NULL
 );
 COMMENT ON TABLE "Payments" IS 'Хранит информацию об оплатах заказов';
 COMMENT ON COLUMN "Payments"."Id" IS 'Уникальный идентификатор записи (первичный ключ)';
 COMMENT ON COLUMN "Payments"."DealId" IS 'Номер заявки (обязательное поле) - ссылка на Deals';
 COMMENT ON COLUMN "Payments"."CreatedDate" IS 'Дата и время платежа (по умолчанию текущая дата и время по UTC 0)';
-COMMENT ON COLUMN "Payments"."ClientId" IS 'Номер клиента (обязательное поле) - ссылка на Clients';
 COMMENT ON COLUMN "Payments"."PaymentSum" IS 'Сумма платежа (обязательное поле)';
 
 --Индекс 1: Фильтрация сделок по сотруднику и статусу и дате
@@ -517,6 +515,7 @@ WHERE u."IsBlocked" = false and u."RoleId" in (4,6)
 GROUP BY u."Id", u."LastName", u."FirstName", u."Email", ur."Name"
 ORDER BY u."Id";
 
+
 --View 3: Финансовый отчет по клиентам
 CREATE OR REPLACE VIEW "ClientFinancialView" as
 SELECT 
@@ -532,7 +531,12 @@ FROM "Clients" c
 JOIN "ClientType" ct ON c."Type" = ct."Id"
 LEFT JOIN "Companies" comp ON c."CompanyId" = comp."Id"
 LEFT JOIN "Deals" d ON c."Id" = d."ClientId"
-LEFT JOIN "Payments" p on c."Id" = p."ClientId" 
+LEFT JOIN LATERAL (
+    SELECT 
+        SUM("PaymentSum") AS "PaymentSum"
+    FROM "Payments" p1
+    WHERE p1."DealId" = d."Id" 
+) p ON TRUE
 GROUP BY c."Id", c."LastName", c."FirstName", c."MiddleName", ct."Name", comp."Name"
 ORDER BY c."Id";
 
@@ -548,6 +552,3 @@ GRANT ALL PRIVILEGES ON SCHEMA public TO crm_admin;
 -- Роль 2: Аналитик (только чтение отчетов и представлений)
 CREATE ROLE crm_analyst WITH LOGIN PASSWORD 'Analyst789&*(';
 ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT SELECT ON TABLES TO crm_analyst;
-
-
-
