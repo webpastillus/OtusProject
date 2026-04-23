@@ -162,9 +162,9 @@ select *
 from "ActiveDealsView";
 
 --Оплата 1
-CALL "RegisterPayment"(1, 1, 15000);
+CALL "RegisterPayment"(1, 15000);
 --Оплата 2
-CALL "RegisterPayment"(1, 1, 31000);
+CALL "RegisterPayment"(1, 31000);
 
 --Заказ исполнен
 UPDATE "Deals" SET "Status"=5 WHERE "Id"=1;
@@ -211,6 +211,12 @@ from "EmployeePerformanceView";
 select *
 from "ActiveDealsView";
 
+--Оплата 1
+CALL "RegisterPayment"(2, 15000);
+--Оплата 2
+CALL "RegisterPayment"(2, 31000);
+--Оплата 2
+CALL "RegisterPayment"(2, 54000);
 
 --SET enable_seqscan = OFF;
 --SET enable_seqscan = DEFAULT;
@@ -356,3 +362,12 @@ CTE Scan on "EmployeeDealsStats" e  (cost=26.37..26.39 rows=1 width=156) (actual
 Planning Time: 0.195 ms
 Execution Time: 0.082 ms
  */
+
+-- Статистика по таблицам/индесам
+SELECT  *
+FROM pg_stat_user_tables
+
+SELECT *
+FROM pg_stat_user_indexes
+
+

@@ -295,7 +295,6 @@ $$;
 --Процедура 2: Внесение платежа по сделке
 CREATE OR REPLACE PROCEDURE "RegisterPayment"(
     p_DealId INT,
-    p_ClientId INT,
     p_PaymentSum DECIMAL(10,2)
 )
 LANGUAGE plpgsql
@@ -306,8 +305,8 @@ DECLARE
 BEGIN
 
     --Регистрируем платеж
-    INSERT INTO "Payments" ("DealId", "ClientId", "PaymentSum")
-    VALUES (p_DealId, p_ClientId, p_PaymentSum);
+    INSERT INTO "Payments" ("DealId", "PaymentSum")
+    VALUES (p_DealId, p_PaymentSum);
     
     --Получаем общую сумму сделки
     SELECT "Amount" INTO v_DealAmount
