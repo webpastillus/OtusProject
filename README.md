@@ -8,7 +8,7 @@
 
 [Project.sql](https://github.com/webpastillus/OtusProject/blob/main/Project.sql) 
 
-### Таблицы (14)
+### Таблицы (15)
 
 | Таблица | Назначение |
 |---------|------------|
