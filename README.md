@@ -32,7 +32,7 @@
 
 [ProjectCRM.erd](https://github.com/webpastillus/OtusProject/blob/main/ProjectCRM.erd) 
 
-![postgres - ProjectCRM - public.png](https://github.com/webpastillus/OtusProject/blob/main/postgres%20-%20ProjectCRM%20-%20public.png)
+![ProjectCRM.png](https://github.com/webpastillus/OtusProject/blob/main/ProjectCRM.png)
 
 
 ## Функции (3 + 2 триггерные)
