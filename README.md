@@ -12,21 +12,21 @@
 
 | Таблица | Назначение |
 |---------|------------|
-| `ClientContactInfo` | Контактная информация клиентов |
+| <a id="ClientContactInfo"></a>`ClientContactInfo` | Контактная информация клиентов |
 | <a id="ClientType"></a>`ClientType` | Типы клиентов (физ.лицо, ИП, юр.лицо и т.д.) |
-| `Clients` | Основная информация о клиентах |
-| `Companies` | Компании клиентов |
-| `ContactInfoType` | Типы контактной информации |
-| `DealProducts` | Связь заявок с продуктами |
-| `DealStatuses` | Статусы заявок |
-| `Deals` | Основная информация о заявках |
-| `DealsHistory` | История изменения статусов |
-| `InteractionTypes` | Типы взаимодействий с клиентами |
-| `Interactions` | История взаимодействий |
-| `Payments` | Информация об оплатах |
-| `Products` | Продукты и услуги |
-| `UserRoles` | Роли сотрудников |
-| `Users` | Информация о сотрудниках |
+| <a id="Clients"></a>`Clients` | Основная информация о клиентах |
+| <a id="Companies"></a>`Companies` | Компании клиентов |
+| <a id="ContactInfoType"></a>`ContactInfoType` | Типы контактной информации |
+| <a id="DealProducts"></a>`DealProducts` | Связь заявок с продуктами |
+| <a id="DealStatuses"></a>`DealStatuses` | Статусы заявок |
+| <a id="Deals"></a>`Deals` | Основная информация о заявках |
+| <a id="DealsHistory"></a>`DealsHistory` | История изменения статусов |
+| <a id="InteractionTypes"></a>`InteractionTypes` | Типы взаимодействий с клиентами |
+| <a id="Interactions"></a>`Interactions` | История взаимодействий |
+| <a id="Payments"></a>`Payments` | Информация об оплатах |
+| <a id="Products"></a>`Products` | Продукты и услуги |
+| <a id="UserRoles"></a>`UserRoles` | Роли сотрудников |
+| <a id="Users"></a>`Users` | Информация о сотрудниках |
 
 ### ER-диаграмма
 
@@ -50,11 +50,11 @@
 
 | Название | Назначение | Пример вызова |
 |-----------|------------|---------------|
-| `AddProductToDeal` | Добавление продуктов в сделку | `CALL "AddProductToDeal"(1, '[{"NameJS":"Ноутбук","QuantityJS":2}]');` |
-| `RegisterPayment` | Внесение платежа по сделке | `CALL "RegisterPayment"(1, 1, 5000.00);` |
-| `AssignDealResponsible` | Назначение ответственного на сделку | `CALL "AssignDealResponsible"(1, 2);` |
-| `CreateDealByUser` | Создание сделки сотрудником | `CALL "CreateDealByUser"(1, 2, '[{"NameJS":"Ноутбук","QuantityJS":2}]');` |
-| `CopyDeal` | Копирование сделки с продуктами | `CALL "CopyDeal"(1);` |
+| <a id="AddProductToDeal"></a>`AddProductToDeal` | Добавление продуктов в сделку | `CALL "AddProductToDeal"(1, '[{"NameJS":"Ноутбук","QuantityJS":2}]');` |
+| <a id="RegisterPayment"></a>`RegisterPayment` | Внесение платежа по сделке | `CALL "RegisterPayment"(1, 1, 5000.00);` |
+| <a id="AssignDealResponsible"></a>`AssignDealResponsible` | Назначение ответственного на сделку | `CALL "AssignDealResponsible"(1, 2);` |
+| <a id="CreateDealByUser"></a>`CreateDealByUser` | Создание сделки сотрудником | `CALL "CreateDealByUser"(1, 2, '[{"NameJS":"Ноутбук","QuantityJS":2}]');` |
+| <a id="CopyDeal"></a>`CopyDeal` | Копирование сделки с продуктами | `CALL "CopyDeal"(1);` |
  
 ## Триггеры (2)
 
@@ -79,4 +79,13 @@
 
 ## Описание 
 
-Таблицы справочники  [`ClientType`](#ClientType)
+Таблицы справочники [`ClientType`](#ClientType), [`Companies`](#Companies), [`ContactInfoType`](#ContactInfoType), [`UserRoles`](#UserRoles), [`DealStatuses`](#DealStatuses), [`InteractionTypes`](#InteractionTypes), [`Products`](#Products), а так же пользователей CRM [`Users`](#Users) меняются через IT-команду (разработка). У сотрудиников CRM нет возможности вносить изменения в данные таблицы через CRM.
+
+Клиентов [`Clients`](#Clients) и их контактные данные [`ClientContactInfo`](#ClientContactInfo) заполняются через INSERT, специальных функций для этого нет. Таблицы могут измениться если:
+1. Зарегистрировался новый клиент (INSERT в две таблицы)
+2. Сотрудник создал клиента самостоятельно (INSERT в две таблицы)(возможно оформить как процедуру)
+3. Клиент или сотрудник изменили контактные данные (UPDATE в [`ClientContactInfo`](#ClientContactInfo))(возможно оформить как процедуру)
+
+Для сделок [`Deals`](#Deals) имеется 3 способа их создания:
+1. Клиент создает новую через CRM (INSERT)
+2. Клиент копирует свой существующий заказ со всем продуктами в прошлом заказе (INSERT)
