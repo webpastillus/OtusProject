@@ -39,11 +39,11 @@
 
 | Название | Назначение | Пример вызова |
 |---------|------------|---------------|
-| `GetDealTotalSum` | Подсчёт общей суммы сделки | `SELECT "GetDealTotalSum"(1);` |
-| `GetDealTotalPaidSum` | Подсчёт оплаченной суммы по сделке | `SELECT "GetDealTotalPaidSum"(1);` |
-| `GetUserTotalDealsSum` | Сумма сделок сотрудника за период или за все время | `SELECT "GetUserTotalDealsSum"(1, '2024-01-01', '2024-12-31');` или `SELECT "GetUserTotalDealsSum"(1);` |
-| `SetAdditionalDateDeals` | Для заполения даты одобрения, полной оплаты, закрытия при смене статуса сделки  | при UPDATE Deals |
-| `LogDealStatusChange` | Изменение статуса сделки с автоматической записью в табилцу историй изменения статусов | при INSERT и UPDATE Deals |
+| <a id="GetDealTotalSum"></a>`GetDealTotalSum` | Подсчёт общей суммы сделки | `SELECT "GetDealTotalSum"(1);` |
+| <a id="GetDealTotalPaidSum"></a>`GetDealTotalPaidSum` | Подсчёт оплаченной суммы по сделке | `SELECT "GetDealTotalPaidSum"(1);` |
+| <a id="GetUserTotalDealsSum"></a>`GetUserTotalDealsSum` | Сумма сделок сотрудника за период или за все время | `SELECT "GetUserTotalDealsSum"(1, '2024-01-01', '2024-12-31');` или `SELECT "GetUserTotalDealsSum"(1);` |
+| <a id="SetAdditionalDateDeals"></a>`SetAdditionalDateDeals` | Для заполения даты одобрения, полной оплаты, закрытия при смене статуса сделки  | при UPDATE Deals |
+| <a id="LogDealStatusChange"></a>`LogDealStatusChange` | Изменение статуса сделки с автоматической записью в табилцу историй изменения статусов | при INSERT и UPDATE Deals |
 
 
 ## Хранимые процедуры (5)
@@ -60,8 +60,8 @@
 
 | Название | Назначение |
 |---------------|------------|
-| `TrgrSetAdditionalDateDeals` | Для заполения даты одобрения, полной оплаты, закрытия при смене статуса сделки. Вызывается при UPDATE Deals |
-| `TrgrLogDealStatusChange` | Изменение статуса сделки с автоматической записью в табилцу историй изменения статусов. Вызывается при INSERT и UPDATE Deals |
+| <a id="TrgrSetAdditionalDateDeals"></a>`TrgrSetAdditionalDateDeals` | Для заполения даты одобрения, полной оплаты, закрытия при смене статуса сделки. Вызывается при UPDATE Deals |
+| <a id="TrgrLogDealStatusChange"></a>`TrgrLogDealStatusChange` | Изменение статуса сделки с автоматической записью в табилцу историй изменения статусов. Вызывается при INSERT и UPDATE Deals |
 
 ## Представления (Views) (3)
 
@@ -87,5 +87,12 @@
 3. Клиент или сотрудник изменили контактные данные (UPDATE в [`ClientContactInfo`](#ClientContactInfo))(возможно оформить как процедуру)
 
 Для сделок [`Deals`](#Deals) имеется 3 способа их создания:
-1. Клиент создает новую через CRM (INSERT)
-2. Клиент копирует свой существующий заказ со всем продуктами в прошлом заказе (INSERT)
+1. Клиент создает новую через CRM (INSERT). Клиент может не добавлять продукты сразу, а добавить их позже. Заказ будет в статусе 1 - Новый и его необходимо обработать менеджером.
+2. Клиент копирует свой существующий заказ со всем продуктами в прошлом заказе (Вызов [`CALL "CopyDeal"();`](#CopyDeal)). При этом данный заказ будет в статусе 1 - Новый и его необходимо обработать менеджером.
+3. Сотрудник по указанию клиента формирует заказ (Вызов [`CALL "CreateDealByUser"();`](#CreateDealByUser))). Данный заказ будет сразу закреплен на сотрудником, который его создал, а так же переведен в статус 3 - Одобрен. (возможно добавить в процедуру автоматическое добавление взаимодейсвия)
+
+При каждом изменении статуса в [`Deals`](#Deals) вызывается триггер [`TrgrLogDealStatusChange`](#TrgrLogDealStatusChange) для записи истории изменения статуса в [`DealsHistory`](#DealsHistory). Одобрение (Статус - 3) и закрытие (Статус - 5) заказов происходит через UPDATE [`Deals`](#Deals).
+
+Для добавления продуктов в [`DealProducts`](#DealProducts) имеется процедура [`CALL "AddProductToDeal"();`](#AddProductToDeal). Это основной механизм добавления продуктов в сделку. (Есть неоптимизхированный моменет с удалением продуктов. Нужно вызвать DELETE в [`DealProducts`](#DealProducts) и UPDATE "Amount" в [`Deals`](#Deals) с использованием функции [`GetDealTotalSum`](#GetDealTotalSum))
+
+Взаимодействия [`Interactions`](#Interactions) добавяются через INSERT. 
