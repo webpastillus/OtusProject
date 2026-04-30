@@ -10,30 +10,147 @@
 
 ### Таблицы (15)
 
-#### <a id="ClientType"></a>`ClientType` - Типы клиентов (физ.лицо, ИП, юр.лицо и т.д.)
+#### <a id="ClientType"></a>`ClientType` - Таблица с типами клиентов (физ.лицо, ИП, юр.лицо и т.д.)
 
 | Поле | Тип | Описание |
 |------|-----|----------|
 | `Id` | SERIAL | Уникальный идентификатор (PK) |
-| `Name` | VARCHAR(255) | Название типа (Физ.лицо, ИП, Самозанятый, Юр.лицо) |
+| `Name` | VARCHAR(255) | Название типа клиента |
 
-| Таблица | Назначение |
-|---------|------------|
-| <a id="ClientContactInfo"></a>`ClientContactInfo` | Контактная информация клиентов |
-| `ClientType` | Типы клиентов (физ.лицо, ИП, юр.лицо и т.д.) |
-| <a id="Clients"></a>`Clients` | Основная информация о клиентах |
-| <a id="Companies"></a>`Companies` | Компании клиентов |
-| <a id="ContactInfoType"></a>`ContactInfoType` | Типы контактной информации |
-| <a id="DealProducts"></a>`DealProducts` | Связь заявок с продуктами |
-| <a id="DealStatuses"></a>`DealStatuses` | Статусы заявок |
-| <a id="Deals"></a>`Deals` | Основная информация о заявках |
-| <a id="DealsHistory"></a>`DealsHistory` | История изменения статусов |
-| <a id="InteractionTypes"></a>`InteractionTypes` | Типы взаимодействий с клиентами |
-| <a id="Interactions"></a>`Interactions` | История взаимодействий |
-| <a id="Payments"></a>`Payments` | Информация об оплатах |
-| <a id="Products"></a>`Products` | Продукты и услуги |
-| <a id="UserRoles"></a>`UserRoles` | Роли сотрудников |
-| <a id="Users"></a>`Users` | Информация о сотрудниках |
+#### <a id="Companies"></a>`Companies` - Таблица с названиями компаний клиентов, если они являются юр.лицом
+
+| Поле | Тип | Описание |
+|------|-----|----------|
+| `Id` | SERIAL | Уникальный идентификатор (PK) |
+| `Name` | VARCHAR(255) | Название компании |
+
+#### <a id="Clients"></a>`Clients` - Хранит основную информацию о клиентах компании
+
+| Поле | Тип | Ограничение | Описание |
+|------|-----|-------------|----------|
+| `Id` | SERIAL | PRIMARY KEY | Уникальный идентификатор клиента (первичный ключ) |
+| `FirstName` | VARCHAR(255) | NOT NULL | Имя клиента (обязательное поле) |
+| `LastName` | VARCHAR(255) | NOT NULL | Фамилия клиента (обязательное поле) |
+| `MiddleName` | VARCHAR(255) | NULL | Отчество клиента (не обязательное поле) |
+| `Type` | INT2 | NOT NULL, FK(ClientType) | Тип клиента (обязательное поле) - справочник [`ClientType`](#ClientType) |
+| `CompanyId` | INT | NULL, FK(Companies) | Id компании из которой клиент (не обязательное поле) - справочник [`Companies`](#Companies) |
+| `CreatedDate` | TIMESTAMP | DEFAULT UTC | Дата и время создания записи (по умолчанию текущая дата и время по UTC 0) |
+
+#### <a id="ClientContactInfo"></a>`ClientContactInfo` - Таблица с типами контактной информации клиентов
+
+| Поле | Тип | Описание |
+|------|-----|----------|
+| `Id` | SERIAL | Уникальный идентификатор (PK) |
+| `Name` | VARCHAR(255) | Название типа контактной информации клиента |
+
+#### <a id="ContactInfoType"></a>`ContactInfoType` - Хранит контактную информацию о клиенте
+
+| Поле | Тип | Ограничение | Описание |
+|------|-----|-------------|----------|
+| `Id` | SERIAL | PRIMARY KEY | Уникальный идентификатор записи (первичный ключ) |
+| `ClientId` | INT | NOT NULL, FK(Clients) | Номер клиента (обязательное поле) - ссылка на [`Clients`](#Clients) |
+| `ContactInfoType` | INT2 | NOT NULL, FK(ContactInfoType) | Тип контактной информации (обязательное поле) - справочник [`ContactInfoType`](#ContactInfoType) |
+| `ContactValue` | VARCHAR(500) | NOT NULL | Контактная информация (обязательное поле) |
+| `IsActual` | BOOLEAN | NOT NULL, DEFAULT TRUE | Акутальнось данной контактной информации (по умолчанию true) |
+| `CreatedDate` | TIMESTAMP | DEFAULT UTC | Дата и время создания записи (по умолчанию текущая дата и время по UTC 0) |
+
+#### <a id="UserRoles"></a>`UserRoles` - Таблица с ролью/должностью сотрудников в CRM
+
+| Поле | Тип | Описание |
+|------|-----|----------|
+| `Id` | SERIAL | Уникальный идентификатор (PK) |
+| `Name` | VARCHAR(255) | Название роли/должности сотрудников |
+
+#### <a id="Users"></a>`Users` - Хранит информацию о сотрудниках
+
+| Поле | Тип | Ограничение | Описание |
+|------|-----|-------------|----------|
+| `Id` | SERIAL | PRIMARY KEY | Уникальный идентификатор сотрудника (первичный ключ) |
+| `FirstName` | VARCHAR(255) | NOT NULL | Имя сотрудника (обязательное поле) |
+| `LastName` | VARCHAR(255) | NOT NULL | Фамилия сотрудника (обязательное поле) |
+| `MiddleName` | VARCHAR(255) | NULL | Отчество сотрудника (не обязательное поле) |
+| `Email` | VARCHAR(100) | NOT NULL | Email сотрудника (обязательное поле) |
+| `RoleId` | INT2 | NOT NULL, FK(UserRoles) | Должностью сотрудника (обязательное поле) - справочник [`UserRoles`](#UserRoles) |
+| `CreatedDate` | TIMESTAMP | DEFAULT UTC | Дата и время создания записи (по умолчанию текущая дата и время по UTC 0) |
+| `IsBlocked` | BOOLEAN | NOT NULL, DEFAULT FALSE | Заблокирован/уволен сотрудник (по умолчанию false) |
+
+#### <a id="DealStatuses"></a>`DealStatuses` - Хранит информацию о сотрудниках
+
+| Поле | Тип | Описание |
+|------|-----|----------|
+| `Id` | SERIAL | Уникальный идентификатор (PK) |
+| `Name` | VARCHAR(50) | Название статуса |
+
+#### <a id="Deals"></a>`Deals` - Хранит информацию по заявокам клиентов
+
+| Поле | Тип | Ограничение | Описание |
+|------|-----|-------------|----------|
+| `Id` | SERIAL | PRIMARY KEY | Уникальный идентификатор заявки (первичный ключ) |
+| `ClientId` | INT | NOT NULL, FK(Clients) | Номер клиента (обязательное поле) - ссылка на [`Clients`](#Clients) |
+| `UserId` | INT | NULL, FK(Users) | Номер сотрудника (обязательное поле) - ссылка на [`Users`](#Users) |
+| `Status` | INT2 | NOT NULL, DEFAULT 1, FK(DealStatuses) | Статус заявки (по умолчанию 1) - ссылка на [`DealStatuses`](#DealStatuses) |
+| `Amount` | NUMERIC(12,2) | NOT NULL, DEFAULT 0 | Сумма заказа/заявки (по умолчанию 0) |
+| `CreatedDate` | TIMESTAMP | DEFAULT UTC | Дата и время создания заявки (по умолчанию текущая дата и время по UTC 0) |
+| `ApprovedDate` | TIMESTAMP | NULL | Дата и время одобрения заявки - заполнение через триггер [`TrgrSetAdditionalDateDeals`](#TrgrSetAdditionalDateDeals) |
+| `AcceptDate` | TIMESTAMP | NULL | Дата и время принятия/полной оплаты заявки - заполнение через триггер [`TrgrSetAdditionalDateDeals`](#TrgrSetAdditionalDateDeals) |
+| `ClosedDate` | TIMESTAMP | NULL | Дата и время закрытия заявки - заполнение через триггер [`TrgrSetAdditionalDateDeals`](#TrgrSetAdditionalDateDeals) |
+
+#### <a id="DealsHistory"></a>`DealsHistory` - Хранит информацию об истории изменения статуса заявки
+
+| Поле | Тип | Ограничение | Описание |
+|------|-----|-------------|----------|
+| `Id` | SERIAL | PRIMARY KEY | Уникальный идентификатор записи (первичный ключ) |
+| `DealId` | INT | NOT NULL, FK(Deals) | Номер заявки (обязательное поле) - ссылка на [`Deals`](#Deals) |
+| `CreatedDate` | TIMESTAMP | DEFAULT UTC | Дата и время создания заявки (по умолчанию текущая дата и время по UTC 0) |
+| `Status` | INT2 | NOT NULL, FK(DealStatuses) | Статус заявки (обязательное поле) - ссылка на [`DealStatuses`](#DealStatuses) |
+
+#### <a id="InteractionTypes"></a>`InteractionTypes` - Таблица с типами взаимодействия с клиентами
+
+| Поле | Тип | Описание |
+|------|-----|----------|
+| `Id` | SERIAL | Уникальный идентификатор (PK) |
+| `Name` | VARCHAR(50) | Название типа взаимодействия |
+
+#### <a id="Interactions"></a>`Interactions` - Хранит информацию об истории взаимодействия с клиентами
+
+| Поле | Тип | Ограничение | Описание |
+|------|-----|-------------|----------|
+| `Id` | SERIAL | PRIMARY KEY | Уникальный идентификатор записи (первичный ключ) |
+| `ClientId` | INT | NOT NULL, FK(Clients) | Номер клиента (обязательное поле) - ссылка на [`Clients`](#Clients) |
+| `UserId` | INT | NOT NULL, FK(Users) | Дата и время создания заявки (по умолчанию текущая дата и время по UTC 0) |
+| `DealId` | INT | NOT NULL, FK(Deals) | Номер заявки (обязательное поле) - ссылка на [`Deals`](#Deals) |
+| `InteractionType` | INT2 | NOT NULL, FK(InteractionTypes) | Тип взаимодействия (обязательное поле) - ссылка на [`InteractionTypes`](#InteractionTypes) |
+| `ContactId` | INT | NOT NULL, FK(ClientContactInfo) | Номер записи контакта клиента (обязательное поле) - ссылка на [`ClientContactInfo`](#ClientContactInfo) |
+| `CreatedDate` | TIMESTAMP | DEFAULT UTC | Дата и время создания заявки (по умолчанию текущая дата и время по UTC 0) |
+| `Duration` | INT2 | NULL | Длительность разговора в секундах (не обязательное поле) |
+| `Comments` | VARCHAR(2000) | NULL | Комментарий от сотрудника по итогу взаимодействия (не обязательное поле) |
+
+#### <a id="Products"></a>`Products` - Таблица с продуктами/услугами и их ценой
+
+| Поле | Тип | Описание |
+|------|-----|----------|
+| `Id` | SERIAL | Уникальный идентификатор (PK) |
+| `Name` | VARCHAR(100) | Название продукта |
+| `Price` | NUMERIC(10,2) | Цена продукта |
+
+#### <a id="DealProducts"></a>`DealProducts` - Хранит информацию о продуктах в заказах клиента
+
+| Поле | Тип | Ограничение | Описание |
+|------|-----|-------------|----------|
+| `Id` | SERIAL | PRIMARY KEY | Уникальный идентификатор записи (первичный ключ) |
+| `DealId` | INT | NOT NULL, FK(Deals) | Номер заявки (обязательное поле) - ссылка на [`Deals`](#Deals) |
+| `ProductId` | INT | NOT NULL, FK(Products) | Номер продукта (обязательное поле) - ссылка на [`Products`](#Products) |
+| `Quantity` | INT | DEFAULT 1 | Количество позиций в заказе (по умолчанию 1) |
+| `CreatedDate` | TIMESTAMP | DEFAULT UTC | Дата и время добавления продукта в заказ (по умолчанию текущая дата и время по UTC 0) |
+
+#### <a id="Payments"></a>`Payments` - Хранит информацию о продуктах в заказах клиента
+
+| Поле | Тип | Ограничение | Описание |
+|------|-----|-------------|----------|
+| `Id` | SERIAL | PRIMARY KEY | Уникальный идентификатор записи (первичный ключ) |
+| `DealId` | INT | NOT NULL, FK(Deals) | Номер заявки (обязательное поле) - ссылка на [`Deals`](#Deals) |
+| `CreatedDate` | TIMESTAMP | DEFAULT UTC | Дата и время платежа (по умолчанию текущая дата и время по UTC 0) |
+| `PaymentSum` | NUMERIC(10,2) | NOT NULL | Сумма платежа (обязательное поле) |
 
 ### ER-диаграмма
 
