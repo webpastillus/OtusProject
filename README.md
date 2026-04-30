@@ -20,7 +20,7 @@
 | Таблица | Назначение |
 |---------|------------|
 | <a id="ClientContactInfo"></a>`ClientContactInfo` | Контактная информация клиентов |
-| <a id="ClientType"></a>`ClientType` | Типы клиентов (физ.лицо, ИП, юр.лицо и т.д.) |
+| `ClientType` | Типы клиентов (физ.лицо, ИП, юр.лицо и т.д.) |
 | <a id="Clients"></a>`Clients` | Основная информация о клиентах |
 | <a id="Companies"></a>`Companies` | Компании клиентов |
 | <a id="ContactInfoType"></a>`ContactInfoType` | Типы контактной информации |
