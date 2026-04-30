@@ -191,22 +191,22 @@
 
 | Название | Назначение | Входные поля | Пример вызова |
 |---------|------------|---------------|---------------|
-| <a id="GetDealTotalSum"></a>`GetDealTotalSum` | Подсчёт общей суммы сделки | `SELECT "GetDealTotalSum"(1);` |
-| <a id="GetDealTotalPaidSum"></a>`GetDealTotalPaidSum` | Подсчёт оплаченной суммы по сделке | `SELECT "GetDealTotalPaidSum"(1);` |
-| <a id="GetUserTotalDealsSum"></a>`GetUserTotalDealsSum` | Сумма сделок сотрудника за период или за все время | `SELECT "GetUserTotalDealsSum"(1, '2024-01-01', '2024-12-31');` или `SELECT "GetUserTotalDealsSum"(1);` |
-| <a id="SetAdditionalDateDeals"></a>`SetAdditionalDateDeals` | Для заполения даты одобрения, полной оплаты, закрытия при смене статуса сделки  | при UPDATE Deals |
-| <a id="LogDealStatusChange"></a>`LogDealStatusChange` | Изменение статуса сделки с автоматической записью в табилцу историй изменения статусов | при INSERT и UPDATE Deals |
+| <a id="GetDealTotalSum"></a>`GetDealTotalSum` | Подсчёт общей суммы сделки | `DealId` | `SELECT "GetDealTotalSum"(1);` |
+| <a id="GetDealTotalPaidSum"></a>`GetDealTotalPaidSum` | Подсчёт оплаченной суммы по сделке | `DealId` | `SELECT "GetDealTotalPaidSum"(1);` |
+| <a id="GetUserTotalDealsSum"></a>`GetUserTotalDealsSum` | Сумма сделок сотрудника за период или за все время (поля с датами не указываем) | `UserId`, `DateFrom`, `DateTo` | `SELECT "GetUserTotalDealsSum"(1, '2024-01-01', '2024-12-31');` или `SELECT "GetUserTotalDealsSum"(1);` |
+| <a id="SetAdditionalDateDeals"></a>`SetAdditionalDateDeals` | Для заполения даты одобрения, полной оплаты, закрытия при смене статуса сделки  | - | при UPDATE Deals |
+| <a id="LogDealStatusChange"></a>`LogDealStatusChange` | Изменение статуса сделки с автоматической записью в табилцу историй изменения статусов | - | при INSERT и UPDATE Deals |
 
 
 ## Хранимые процедуры (5)
 
 | Название | Назначение | Входные поля | Пример вызова |
 |---------|------------|---------------|---------------|
-| <a id="AddProductToDeal"></a>`AddProductToDeal` | Добавление продуктов в сделку | `CALL "AddProductToDeal"(1, '[{"NameJS":"Ноутбук","QuantityJS":2}]');` |
-| <a id="RegisterPayment"></a>`RegisterPayment` | Внесение платежа по сделке | `CALL "RegisterPayment"(1, 1, 5000.00);` |
-| <a id="AssignDealResponsible"></a>`AssignDealResponsible` | Назначение ответственного на сделку | `CALL "AssignDealResponsible"(1, 2);` |
-| <a id="CreateDealByUser"></a>`CreateDealByUser` | Создание сделки сотрудником | `CALL "CreateDealByUser"(1, 2, '[{"NameJS":"Ноутбук","QuantityJS":2}]');` |
-| <a id="CopyDeal"></a>`CopyDeal` | Копирование сделки с продуктами | `CALL "CopyDeal"(1);` |
+| <a id="AddProductToDeal"></a>`AddProductToDeal` | Добавление продуктов в сделку | `DealId`, `Products` | `CALL "AddProductToDeal"(1, '[{"NameJS":"Ноутбук","QuantityJS":2}]');` |
+| <a id="RegisterPayment"></a>`RegisterPayment` | Внесение платежа по сделке | `DealId`, `PaymentSum` | `CALL "RegisterPayment"(1, 1, 5000.00);` |
+| <a id="AssignDealResponsible"></a>`AssignDealResponsible` | Назначение ответственного на сделку | `DealId`, `UserId` | `CALL "AssignDealResponsible"(1, 2);` |
+| <a id="CreateDealByUser"></a>`CreateDealByUser` | Создание сделки сотрудником | `ClientId`, `UserId`, `Products` | `CALL "CreateDealByUser"(1, 2, '[{"NameJS":"Ноутбук","QuantityJS":2}]');` |
+| <a id="CopyDeal"></a>`CopyDeal` | Копирование сделки с продуктами | `DealId` | `CALL "CopyDeal"(1);` |
  
 ## Триггеры (2)
 
