@@ -167,17 +167,30 @@
 | `CreatedDate` | TIMESTAMP | DEFAULT UTC | Дата и время платежа (по умолчанию текущая дата и время по UTC 0) |
 | `PaymentSum` | NUMERIC(10,2) | NOT NULL | Сумма платежа (обязательное поле) |
 
+### Индексы
+
+| № | Название индекса | Поля | Таблица | Назначение |
+|---|------------------|------|-----|------------|
+| 1 | `IX_Deals_Status_CreatedDate_UserId` | `UserId`, `Status`, `CreatedDate` | [`Deals`](#Deals) | Фильтрация сделок по сотруднику и статусу и дате |
+| 2 | `IX_Deals_Status_CreatedDate` | `Status`, `CreatedDate` | [`Deals`](#Deals) | Фильтрация сделок по стутусу и дате создания |
+| 3 | `IX_Payments_DealId` | `DealId` | [`Payments`](#Payments) | Фильтрация платежей по сделке |
+| 4 | `IX_DealProducts_DealId` | `DealId` | [`DealProducts`](#DealProducts) | Фильтрация продуктов в сделке |
+| 5 | `IX_Interactions_ClientId_DealId` | `ClientId`, `DealId` | [`Interactions`](#Interactions) | Фильтрация взаимодействий по клиенту и сделке |
+| 6 | `IX_Interactions_CreatedDate_UserId` | `CreatedDate`, `UserId` | [`Interactions`](#Interactions) | Фильтрация взаимодействий по сотруднику и дате |
+| 7 | `UQ_DealProducts_DealId_ProductId` | `DealId`, `ProductId` | [`DealProducts`](#DealProducts) | Уникальный индекс для предотвращения дублей (увеличиваем кол-во в Quantity) |
+| 8 | `UQ_Companies_Name` | `Companies` | `Name` | [`Companies`](#Companies) | Уникальный индекс для предотвращения дублей компаний |
+| 9 | `UQ_Users_Email` | `Users` | `Email` | [`Users`](#Users) | Уникальный индекс для предотвращения дублей email сотрудников |
+
 ### ER-диаграмма
 
 [ProjectCRM.erd](https://github.com/webpastillus/OtusProject/blob/main/ProjectCRM.erd) 
 
 ![ProjectCRM.png](https://github.com/webpastillus/OtusProject/blob/main/ProjectCRM.png)
 
-
 ## Функции (3 + 2 триггерные)
 
-| Название | Назначение | Пример вызова |
-|---------|------------|---------------|
+| Название | Назначение | Входные поля | Пример вызова |
+|---------|------------|---------------|---------------|
 | <a id="GetDealTotalSum"></a>`GetDealTotalSum` | Подсчёт общей суммы сделки | `SELECT "GetDealTotalSum"(1);` |
 | <a id="GetDealTotalPaidSum"></a>`GetDealTotalPaidSum` | Подсчёт оплаченной суммы по сделке | `SELECT "GetDealTotalPaidSum"(1);` |
 | <a id="GetUserTotalDealsSum"></a>`GetUserTotalDealsSum` | Сумма сделок сотрудника за период или за все время | `SELECT "GetUserTotalDealsSum"(1, '2024-01-01', '2024-12-31');` или `SELECT "GetUserTotalDealsSum"(1);` |
@@ -187,8 +200,8 @@
 
 ## Хранимые процедуры (5)
 
-| Название | Назначение | Пример вызова |
-|-----------|------------|---------------|
+| Название | Назначение | Входные поля | Пример вызова |
+|---------|------------|---------------|---------------|
 | <a id="AddProductToDeal"></a>`AddProductToDeal` | Добавление продуктов в сделку | `CALL "AddProductToDeal"(1, '[{"NameJS":"Ноутбук","QuantityJS":2}]');` |
 | <a id="RegisterPayment"></a>`RegisterPayment` | Внесение платежа по сделке | `CALL "RegisterPayment"(1, 1, 5000.00);` |
 | <a id="AssignDealResponsible"></a>`AssignDealResponsible` | Назначение ответственного на сделку | `CALL "AssignDealResponsible"(1, 2);` |
