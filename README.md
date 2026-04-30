@@ -36,14 +36,14 @@
 | `CompanyId` | INT | NULL, FK(Companies) | Id компании из которой клиент (не обязательное поле) - справочник [`Companies`](#Companies) |
 | `CreatedDate` | TIMESTAMP | DEFAULT UTC | Дата и время создания записи (по умолчанию текущая дата и время по UTC 0) |
 
-#### <a id="ClientContactInfo"></a>`ClientContactInfo` - Таблица с типами контактной информации клиентов
+#### <a id="ContactInfoType"></a>`ContactInfoType` - Таблица с типами контактной информации клиентов
 
 | Поле | Тип | Описание |
 |------|-----|----------|
 | `Id` | SERIAL | Уникальный идентификатор (PK) |
 | `Name` | VARCHAR(255) | Название типа контактной информации клиента |
 
-#### <a id="ContactInfoType"></a>`ContactInfoType` - Хранит контактную информацию о клиенте
+#### <a id="ClientContactInfo"></a>`ClientContactInfo` - Хранит контактную информацию о клиенте
 
 | Поле | Тип | Ограничение | Описание |
 |------|-----|-------------|----------|
