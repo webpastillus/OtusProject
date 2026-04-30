@@ -178,8 +178,8 @@
 | 5 | `IX_Interactions_ClientId_DealId` | `ClientId`, `DealId` | [`Interactions`](#Interactions) | Фильтрация взаимодействий по клиенту и сделке |
 | 6 | `IX_Interactions_CreatedDate_UserId` | `CreatedDate`, `UserId` | [`Interactions`](#Interactions) | Фильтрация взаимодействий по сотруднику и дате |
 | 7 | `UQ_DealProducts_DealId_ProductId` | `DealId`, `ProductId` | [`DealProducts`](#DealProducts) | Уникальный индекс для предотвращения дублей (увеличиваем кол-во в Quantity) |
-| 8 | `UQ_Companies_Name` | `Companies` | `Name` | [`Companies`](#Companies) | Уникальный индекс для предотвращения дублей компаний |
-| 9 | `UQ_Users_Email` | `Users` | `Email` | [`Users`](#Users) | Уникальный индекс для предотвращения дублей email сотрудников |
+| 8 | `UQ_Companies_Name` | `Name` | [`Companies`](#Companies) | Уникальный индекс для предотвращения дублей компаний |
+| 9 | `UQ_Users_Email` | `Email` | [`Users`](#Users) | Уникальный индекс для предотвращения дублей email сотрудников |
 
 ### ER-диаграмма
 
